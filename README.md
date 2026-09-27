@@ -200,5 +200,3 @@ Fetches historical runs stored in the SQLite database with aggregate statistics.
 ## License & Attribution
 
 Distributed under the MIT License.
-
-*Architecture inspired by the THRIFT routing methodology.*
