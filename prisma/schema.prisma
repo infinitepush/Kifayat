@@ -1,0 +1,52 @@
+// Kifayat — Prisma schema
+// Database: SQLite (zero external dependency — no DB connection needed on demo day)
+// See PROJECT_MEMORY.md for the decision rationale.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model QueryRun {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // The original user prompt (possibly compound)
+  prompt String
+
+  // Naive (unoptimized) run: direct call to the strong model, no optimization
+  naiveTokensIn   Int
+  naiveTokensOut  Int
+  naiveCostUsd    Float
+  naiveLatencyMs  Int
+  naiveAnswer     String
+
+  // Optimized run: full pipeline (decompose → classify → optimize → cascade → reassemble)
+  optimizedTokensIn   Int
+  optimizedTokensOut  Int
+  optimizedCostUsd    Float
+  optimizedLatencyMs  Int
+  optimizedAnswer     String
+
+  // Engine internals (what the cascade decided)
+  tierUsed       Int    // 0=heuristic, 1=cheap, 2=strong/BYOK, 3=free fallback
+  intentCategory String // e.g. "math", "code", "summarization", "general", etc.
+  wasDecomposed  Boolean
+  subtaskCount   Int     @default(1)
+  degraded       Boolean @default(false) // true if no tier cleared confidence threshold
+
+  // Scoring
+  // IMPORTANT: routingConfidence is a heuristic routing signal, NOT a validated
+  // accuracy measure. It is stored for debugging only and NOT shown on the dashboard.
+  // See PROJECT_MEMORY.md — "Dual scoring system" decision.
+  routingConfidence   Float // 0–1, internal cascade heuristic
+  qualityPreservation Float // 0–1, cosine similarity of embeddings (shown on dashboard)
+
+  // Summary stats (derived, stored for fast dashboard aggregation queries)
+  tokenSavingsPct Float // (naive - optimized) / naive * 100
+  costSavingsPct  Float // (naiveCostUsd - optimizedCostUsd) / naiveCostUsd * 100
+}

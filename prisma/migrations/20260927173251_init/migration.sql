@@ -1,0 +1,25 @@
+-- CreateTable
+CREATE TABLE "QueryRun" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "prompt" TEXT NOT NULL,
+    "naiveTokensIn" INTEGER NOT NULL,
+    "naiveTokensOut" INTEGER NOT NULL,
+    "naiveCostUsd" REAL NOT NULL,
+    "naiveLatencyMs" INTEGER NOT NULL,
+    "naiveAnswer" TEXT NOT NULL,
+    "optimizedTokensIn" INTEGER NOT NULL,
+    "optimizedTokensOut" INTEGER NOT NULL,
+    "optimizedCostUsd" REAL NOT NULL,
+    "optimizedLatencyMs" INTEGER NOT NULL,
+    "optimizedAnswer" TEXT NOT NULL,
+    "tierUsed" INTEGER NOT NULL,
+    "intentCategory" TEXT NOT NULL,
+    "wasDecomposed" BOOLEAN NOT NULL,
+    "subtaskCount" INTEGER NOT NULL DEFAULT 1,
+    "degraded" BOOLEAN NOT NULL DEFAULT false,
+    "routingConfidence" REAL NOT NULL,
+    "qualityPreservation" REAL NOT NULL,
+    "tokenSavingsPct" REAL NOT NULL,
+    "costSavingsPct" REAL NOT NULL
+);

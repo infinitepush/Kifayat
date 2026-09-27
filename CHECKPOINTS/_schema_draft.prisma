@@ -1,0 +1,48 @@
+// This schema will live at prisma/schema.prisma once the Next.js scaffold is in place.
+// Content is pre-written here and will be moved into position.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model QueryRun {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // The original user prompt (possibly compound)
+  prompt String
+
+  // Naive (unoptimized) run metrics
+  naiveTokensIn   Int
+  naiveTokensOut  Int
+  naiveCostUsd    Float
+  naiveLatencyMs  Int
+  naiveAnswer     String
+
+  // Optimized run metrics
+  optimizedTokensIn   Int
+  optimizedTokensOut  Int
+  optimizedCostUsd    Float
+  optimizedLatencyMs  Int
+  optimizedAnswer     String
+
+  // Engine internals
+  tierUsed         Int     // 0, 1, 2, or 3
+  intentCategory   String  // e.g. "math", "code", "summarization", etc.
+  wasDecomposed    Boolean // true if the prompt was split into subtasks
+  subtaskCount     Int     @default(1)
+  degraded         Boolean @default(false) // true if no tier cleared the confidence threshold
+
+  // Scoring
+  routingConfidence    Float  // internal heuristic (0–1), NOT shown as accuracy
+  qualityPreservation  Float  // cosine sim of embeddings (0–1), shown on dashboard
+
+  // Summary stats (derived, stored for fast dashboard queries)
+  tokenSavingsPct Float  // (naive - optimized) / naive * 100
+  costSavingsPct  Float  // (naiveCostUsd - optimizedCostUsd) / naiveCostUsd * 100
+}

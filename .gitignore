@@ -1,0 +1,43 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# Next.js & Build
+/.next/
+/out/
+/build/
+
+# SQLite Database & Prisma local state
+dev.db
+dev.db-journal
+*.db
+*.db-journal
+/prisma/*.db
+
+# Environment variables & secrets (NEVER COMMIT)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+!.env.local.example
+
+# Models & Downloads
+/models/
+/scratch/
+
+# Testing & Coverage
+/coverage
+
+# Logs & Debug
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS & IDE
+.DS_Store
+*.pem
+.vscode/
+.idea/
